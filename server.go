@@ -19,6 +19,19 @@ func NewServer(port string) *Server {
 	}
 }
 
+func (s *Server) Handle(path string, handler http.HandlerFunc) {
+	fmt.Println("Test")
+	s.router.rules[path] = handler
+}
+
+//AddMiddleware ...
+func (s *Server) AddMiddleware(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
+	for _, middleware := range middlewares {
+		f = middleware(f) //Middleware retorna un handler
+	}
+	return f
+}
+
 //Listen ...
 func (s *Server) Listen() error {
 	http.Handle("/", s.router)
