@@ -19,9 +19,15 @@ func NewServer(port string) *Server {
 	}
 }
 
-func (s *Server) Handle(path string, handler http.HandlerFunc) {
-	fmt.Println("Test")
-	s.router.rules[path] = handler
+func (s *Server) Handle(method string, path string, handler http.HandlerFunc) {
+
+	_, exist := s.router.rules[path]
+
+	if !exist {
+		s.router.rules[path] = make(map[string]http.HandlerFunc)
+	}
+
+	s.router.rules[path][method] = handler
 }
 
 //AddMiddleware ...
